@@ -29,11 +29,9 @@ function checkSecret(req, res, next) {
 }
 
 router.post('/webhook', checkSecret, async (req, res) => {
-  // TEMP DEBUG: dump raw payload to inspect Atendai field names.
-  log('info', 'RAW payload', { body: req.body });
-
+  // Atendai puts `evento` at the top level; lead fields live under `data`.
+  const evento = req.body && req.body.evento;
   const data = (req.body && req.body.data) || {};
-  const evento = data.evento;
   const filaNome = data.filaPersonalizada && data.filaPersonalizada.nome_fila;
   const externalId = data.whatsappid;
 
