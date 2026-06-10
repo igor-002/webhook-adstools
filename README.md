@@ -48,7 +48,10 @@ Copy `.env.example` to `.env` and fill in:
 |-------------------|----------|-------------|
 | `PORT`            | no (default `3002`) | HTTP port |
 | `ADSTOOLS_API_KEY`| yes | Bearer token for ADS-Tools `/sync` |
-| `WEBHOOK_SECRET`  | no  | If set, requests must send header `x-webhook-secret` matching this value. If empty, validation is skipped. |
+| `WEBHOOK_SECRET`  | no  | If set, requests must provide a matching secret via header `x-webhook-secret` **or** query param `?secret=`. If empty, validation is skipped. |
+
+> **Note:** Atendai cannot send custom headers, so use the query param form:
+> `http://104.234.186.129:3011/webhook?secret=YOUR_SECRET`
 
 ## Local run
 

@@ -16,11 +16,14 @@ function log(level, msg, extra = {}) {
   console[level === 'error' ? 'error' : 'log'](JSON.stringify(entry));
 }
 
-// Validate x-webhook-secret only when WEBHOOK_SECRET is set in env.
+// Validate the secret only when WEBHOOK_SECRET is set in env.
+// Accepts it via header `x-webhook-secret` OR query param `?secret=`
+// (Atendai cannot send custom headers, so the query param is the fallback).
 function checkSecret(req, res, next) {
   const secret = process.env.WEBHOOK_SECRET;
   if (!secret) return next();
-  if (req.get('x-webhook-secret') === secret) return next();
+  const provided = req.get('x-webhook-secret') || req.query.secret;
+  if (provided === secret) return next();
   log('error', 'Invalid webhook secret', { ip: req.ip });
   return res.status(401).json({ success: false, error: 'invalid secret' });
 }
